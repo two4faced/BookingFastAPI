@@ -21,9 +21,11 @@ async def get_hotels(
     async with async_session_maker() as session:
         query = select(HotelsORM)
         if location:
-            query = query.filter(HotelsORM.location.ilike(f"%{location}%"))
+            query = query.filter(HotelsORM.location.icontains(location.strip()))
         if title:
-            query = query.filter(HotelsORM.title.ilike(f"%{title}%"))
+            query = query.filter(HotelsORM.title.icontains(title.strip()))
+
+        print(query)
 
         query = (
             query
