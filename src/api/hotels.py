@@ -10,31 +10,20 @@ from src.schemas.hotels import Hotel, HotelPatch
 router = APIRouter(prefix='/hotels', tags=['Отели'])
 
 
-# hotels = [
-#     {"id": 1, "title": "Sochi", "name": "sochi"},
-#     {"id": 2, "title": "Дубай", "name": "dubai"},
-#     {"id": 3, "title": "Мальдивы", "name": "maldivi"},
-#     {"id": 4, "title": "Геленджик", "name": "gelendzhik"},
-#     {"id": 5, "title": "Москва", "name": "moscow"},
-#     {"id": 6, "title": "Казань", "name": "kazan"},
-#     {"id": 7, "title": "Санкт-Петербург", "name": "spb"},
-# ]
-
-
 @router.get('', summary='Получить отели')
 async def get_hotels(
         pagination: PaginationDep,
-        id: int | None = Query(None, description='ID отеля'),
-        title: str | None = Query(None, description='Название отеля')
+        title: str | None = Query(None, description='Название отеля'),
+        location: str | None = Query(None, description='Локация отеля')
 ):
     per_page = pagination.per_page or 5
 
     async with async_session_maker() as session:
         query = select(HotelsORM)
-        if id:
-            query.filter_by(id=id)
+        if location:
+            query = query.filter(HotelsORM.location.ilike("%{}%".format(location)))
         if title:
-            query.filter_by(title=title)
+            query = query.filter(HotelsORM.title.ilike("%{}%".format(title)))
 
         query = (
             query
@@ -53,17 +42,15 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
     "1": {
         "summary": "Сочи",
         "value": {
-            "title": "Отель Сочи 5 звезд у моря",
-            "name": "sochi_u_morya",
-            "location": "ул. Моря, 1",
+            "title": "Отель 5 звезд у моря",
+            "location": "г. Сочи, ул. Моря, 1",
         }
     },
     "2": {
         "summary": "Дубай",
         "value": {
-            "title": "Отель Дубай У фонтана",
-            "name": "dubai_fountain",
-            "location": "ул. Шейха, 2",
+            "title": "Отель У фонтана",
+            "location": "Дубай, ул. Шейха, 2",
         }
     }
 })
