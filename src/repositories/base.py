@@ -1,6 +1,7 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert
 
 from src.models.hotels import HotelsORM
+from src.database import engine
 
 
 class BaseRepository:
@@ -17,3 +18,11 @@ class BaseRepository:
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         return result.scalars().one_or_none()
+
+    async def add(self,  data):
+        add_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
+        print(add_stmt.compile(engine, compile_kwargs={'literal_binds': True}))
+        result = await self.session.execute(add_stmt)
+        inserted_data = result.scalars().all()
+
+        return inserted_data
