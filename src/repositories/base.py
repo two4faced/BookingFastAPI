@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
 
-from src.models.hotels import HotelsORM
 from src.database import engine
 
 
@@ -32,6 +31,9 @@ class BaseRepository:
         del_stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(del_stmt)
 
-    async def edit(self,  data: BaseModel, **filter_by) -> None:
-        edit_stmt = update(self.model).filter_by(**filter_by).values(**data.model_dump())
+    async def edit(self,  data: BaseModel, is_patch: bool = False, **filter_by) -> None:
+        edit_stmt = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .values(**data.model_dump(exclude_unset=is_patch)))
         await self.session.execute(edit_stmt)

@@ -1,8 +1,7 @@
 from fastapi import Query, APIRouter, Body
 
 from src.api.dependencies import PaginationDep
-from src.database import async_session_maker, engine
-from src.models.hotels import HotelsORM
+from src.database import async_session_maker
 from src.repositories.hotels import HotelsRepository
 from src.schemas.hotels import Hotel, HotelPatch
 
@@ -56,6 +55,7 @@ async def del_hotel(hotel_id: int):
     async with async_session_maker() as session:
         await HotelsRepository(session).delete(id=hotel_id)
         await session.commit()
+    return {'status': 'OK'}
 
 
 @router.put("/{hotel_id}", summary='Изменить отель')
@@ -63,13 +63,12 @@ async def change_hotel(hotel_id: int, hotel_data: Hotel):
     async with async_session_maker() as session:
         await HotelsRepository(session).edit(hotel_data, id=hotel_id)
         await session.commit()
+    return {'status': 'OK'}
 
 
 @router.patch("/{hotel_id}", summary='Частично изменить отель')
-def edit_hotel(hotel_id: int, hotel_data: HotelPatch):
-    global hotels
-    if hotel_data.name:
-        hotels[hotel_id - 1]['name'] = hotel_data.name
-    if hotel_data.title:
-        hotels[hotel_id - 1]['title'] = hotel_data.title
+async def patch_hotel(hotel_id: int, hotel_data: HotelPatch):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_data, is_patch = True, id=hotel_id)
+        await session.commit()
     return {'status': 'OK'}
