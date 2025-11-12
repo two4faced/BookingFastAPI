@@ -1,6 +1,8 @@
-from src.models.rooms import RoomsORM
+from src.models.users import UsersORM
 from src.repositories.base import BaseRepository
+from src.schemas.users import User
 
 
-class HotelsRepository(BaseRepository):
-    model = RoomsORM
+class RoomsRepository(BaseRepository):
+    model = UsersORM
+    schema = User
