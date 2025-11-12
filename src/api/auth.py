@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from passlib.context import CryptContext
+from sqlalchemy.exc import IntegrityError
 
 from src.database import async_session_maker
 from src.repositories.users import UsersRepository
@@ -22,8 +23,12 @@ async def register_user(
         email = user_data.email,
         hashed_password = hashed_password
     )
-    async with async_session_maker() as session:
-        await UsersRepository(session).add(new_user_data)
-        await session.commit()
+    try:
+        async with async_session_maker() as session:
+            await UsersRepository(session).add(new_user_data)
+            await session.commit()
+    except IntegrityError as exception:
+        return {'error': {str(exception.orig)}}
+
 
     return {'status': 'OK'}
