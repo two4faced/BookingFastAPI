@@ -1,4 +1,9 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+
+class UserLogIn(BaseModel):
+    email: EmailStr | None = Field(None)
+    password: str
 
 class UserRequestAdd(BaseModel):
     name: str

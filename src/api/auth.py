@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Response
 from sqlalchemy.exc import IntegrityError
 
 from src.api.dependencies import UserIdDep, DBDep
-from src.schemas.users import UserRequestAdd, UserAdd
+from src.schemas.users import UserRequestAdd, UserAdd, UserLogIn
 from src.services.auth import AuthService
 
 
@@ -32,7 +32,7 @@ async def register_user(
 
 @router.post('/login')
 async def login_user(
-        user_data: UserRequestAdd,
+        user_data: UserLogIn,
         response: Response,
         db: DBDep
 ):

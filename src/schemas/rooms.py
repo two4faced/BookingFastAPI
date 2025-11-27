@@ -7,6 +7,8 @@ class RoomsAddRequest(BaseModel):
     price: int
     quantity: int
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class RoomsAdd(BaseModel):
     hotel_id: int
