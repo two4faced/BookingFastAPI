@@ -1,18 +1,42 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
-from src.api.dependencies import DBDep, get_current_user_id, get_token
+from src.api.dependencies import DBDep, UserIdDep, PaginationDep
 from src.schemas.bookings import BookingsAdd, BookingsAddRequest
 
 router = APIRouter(prefix='/bookings', tags=['Бронирования'])
 
 
+@router.get('')
+async def get_bookings(
+        db: DBDep,
+        pagination: PaginationDep
+):
+    per_page = pagination.per_page or 5
+
+    return await db.bookings.get_all(
+        limit=per_page,
+        offset=per_page * (pagination.page - 1)
+    )
+
+
+@router.get('/me', summary='Получить свои бронирования')
+async def get_my_bookings(
+        user_id: UserIdDep,
+        db: DBDep,
+):
+    return await db.bookings.get_all(user_id=user_id)
+
+
 @router.post('')
-async def book_room(request: Request, booking_data: BookingsAddRequest, db: DBDep):
-    user_id = get_current_user_id(get_token(request))
+async def book_room(user_id: UserIdDep,
+                    booking_data: BookingsAddRequest,
+                    db: DBDep):
     room = await db.rooms.get_one_or_none(id=booking_data.room_id)
-    price = room.model_dump().get('price') * (booking_data.date_to - booking_data.date_from).days
-    _booking = BookingsAdd(user_id=user_id, price=price, **booking_data.model_dump())
-    res = await db.bookings.add(_booking)
+    price = room.price * (booking_data.date_to - booking_data.date_from).days
+    _booking_data = BookingsAdd(user_id=user_id,
+                                price=price,
+                                **booking_data.model_dump())
+    booking = await db.bookings.add(_booking_data)
     await db.commit()
 
-    return {'status': 'OK', 'data': res}
+    return {'status': 'OK', 'data': booking}
