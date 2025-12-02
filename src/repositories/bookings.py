@@ -11,7 +11,7 @@ class BookingsRepository(BaseRepository):
     model = BookingsORM
     schema = Bookings
 
-    async def get_all(
+    async def get_all_bookings(
             self,
             limit,
             offset,

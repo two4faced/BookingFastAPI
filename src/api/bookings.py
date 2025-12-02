@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from src.api.dependencies import DBDep, UserIdDep, PaginationDep
 from src.schemas.bookings import BookingsAdd, BookingsAddRequest
@@ -13,7 +13,7 @@ async def get_bookings(
 ):
     per_page = pagination.per_page or 5
 
-    return await db.bookings.get_all(
+    return await db.bookings.get_all_bookings(
         limit=per_page,
         offset=per_page * (pagination.page - 1)
     )
@@ -32,11 +32,14 @@ async def book_room(user_id: UserIdDep,
                     booking_data: BookingsAddRequest,
                     db: DBDep):
     room = await db.rooms.get_one_or_none(id=booking_data.room_id)
-    price = room.price * (booking_data.date_to - booking_data.date_from).days
-    _booking_data = BookingsAdd(user_id=user_id,
-                                price=price,
-                                **booking_data.model_dump())
-    booking = await db.bookings.add(_booking_data)
-    await db.commit()
+    if room:
+        price = room.price * (booking_data.date_to - booking_data.date_from).days
+        _booking_data = BookingsAdd(user_id=user_id,
+                                    price=price,
+                                    **booking_data.model_dump())
+        booking = await db.bookings.add(_booking_data)
+        await db.commit()
+    else:
+        raise HTTPException(404, detail='Данная комната не найдена')
 
     return {'status': 'OK', 'data': booking}

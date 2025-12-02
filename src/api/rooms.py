@@ -1,4 +1,6 @@
-from fastapi import Path, APIRouter, HTTPException
+from datetime import date
+
+from fastapi import Path, APIRouter, HTTPException, Query
 from sqlalchemy.exc import IntegrityError
 
 from src.api.dependencies import DBDep
@@ -10,9 +12,11 @@ router = APIRouter(prefix='/hotels', tags=['Номера'])
 @router.get('/{hotel_id}/rooms')
 async def get_rooms(
     db: DBDep,
+    date_from: date = Query(example=['2024-08-01']),
+    date_to: date = Query(example=['2024-08-10']),
     hotel_id: int = Path(),
 ):
-    return await db.rooms.get_all(hotel_id=hotel_id)
+    return await db.rooms.get_filtered_by_time(hotel_id=hotel_id, date_from=date_from, date_to=date_to)
 
 @router.get('/{hotel_id}/rooms/{room_id}')
 async def get_room(
