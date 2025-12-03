@@ -14,12 +14,14 @@ def rooms_ids_for_booking(
         select(BookingsORM.room_id, func.count('*').label('rooms_booked'))
         .select_from(BookingsORM)
         .filter(
-            BookingsORM.date_from <= date_to,
-            BookingsORM.date_to >= date_from
+            BookingsORM.date_from <= date_from,
+            BookingsORM.date_to >= date_to
         )
         .group_by(BookingsORM.room_id)
         .cte(name='rooms_count')
     )
+
+    print(rooms_count)
 
     rooms_left_table = (
         select(
