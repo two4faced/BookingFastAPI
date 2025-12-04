@@ -6,6 +6,7 @@ class RoomsAddRequest(BaseModel):
     description: str | None = Field(None)
     price: int
     quantity: int
+    facilities_ids: list[int] | None = Field(None)
 
     model_config = ConfigDict(from_attributes=True)
 

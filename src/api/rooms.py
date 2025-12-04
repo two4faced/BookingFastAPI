@@ -4,6 +4,7 @@ from fastapi import Path, APIRouter, HTTPException, Query
 from sqlalchemy.exc import IntegrityError
 
 from src.api.dependencies import DBDep
+from src.schemas.facilities import RoomFacilityAdd
 from src.schemas.rooms import RoomsAdd, RoomsPatch, RoomsAddRequest
 
 router = APIRouter(prefix='/hotels', tags=['Номера'])
@@ -35,6 +36,12 @@ async def add_room(
 ):
     try:
         res = await db.rooms.add(RoomsAdd(hotel_id=hotel_id, **room_data.model_dump()))
+        print(res)
+
+        if room_data.facilities_ids:
+            rooms_facilities_data = [RoomFacilityAdd(room_id=res.id, facility_id=f_id) for f_id in room_data.facilities_ids]
+            await db.room_facilities.add_batch(rooms_facilities_data)
+
         await db.commit()
     except IntegrityError:
         raise HTTPException(status_code=404, detail='Данный отель не существует')
