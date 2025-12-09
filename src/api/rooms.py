@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from src.api.dependencies import DBDep
 from src.schemas.facilities import RoomFacilityAdd
-from src.schemas.rooms import RoomsAdd, RoomsPatch, RoomsAddRequest
+from src.schemas.rooms import RoomsAdd, RoomsPatch, RoomsAddRequest, RoomsPatchRequest
 
 router = APIRouter(prefix='/hotels', tags=['Номера'])
 
@@ -66,15 +66,25 @@ async def edit_room(
     db: DBDep,
     hotel_id: int,
     room_id: int,
-    data: RoomsPatch
+    data: RoomsPatchRequest
 ):
-    await db.rooms.edit(data, is_patch = True, id=room_id, hotel_id=hotel_id)
+    await db.rooms.edit(
+        RoomsPatch(**data.model_dump()),
+        is_patch = True,
+        id=room_id,
+        hotel_id=hotel_id
+    )
+
+    if data.facilities_ids:
+        await db.rooms.change_room_facilities(room_id=room_id, data=data)
+
     await db.commit()
 
     return {'status': 'OK'}
 
 @router.put("/{hotel_id}/rooms/{room_id}", summary='Изменить номер')
-async def change_hotel(hotel_id: int, room_id: int, room_data: RoomsAddRequest, db: DBDep):
-    await db.rooms.edit(room_data, id=room_id, hotel_id=hotel_id)
+async def change_room(hotel_id: int, room_id: int, room_data: RoomsAddRequest, db: DBDep):
+    await db.rooms.edit(RoomsAdd(hotel_id=hotel_id, **room_data.model_dump()))
+    await db.rooms.change_room_facilities(room_id=room_id, data=room_data)
     await db.commit()
     return {'status': 'OK'}

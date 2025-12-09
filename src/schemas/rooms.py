@@ -30,3 +30,12 @@ class RoomsPatch(BaseModel):
     quantity: int | None = Field(None)
 
     model_config = ConfigDict(from_attributes=True)
+
+class RoomsPatchRequest(BaseModel):
+    title: str | None = Field(None)
+    description: str | None = Field(None)
+    price: int | None = Field(None)
+    quantity: int | None = Field(None)
+    facilities_ids: list[int] | None = Field(None)
+
+    model_config = ConfigDict(from_attributes=True)
