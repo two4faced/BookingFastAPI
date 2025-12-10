@@ -76,7 +76,7 @@ async def edit_room(
     )
 
     if data.facilities_ids:
-        await db.rooms.change_room_facilities(room_id=room_id, data=data)
+        await db.room_facilities.change_room_facilities(room_id=room_id, data=data)
 
     await db.commit()
 
@@ -85,6 +85,6 @@ async def edit_room(
 @router.put("/{hotel_id}/rooms/{room_id}", summary='Изменить номер')
 async def change_room(hotel_id: int, room_id: int, room_data: RoomsAddRequest, db: DBDep):
     await db.rooms.edit(RoomsAdd(hotel_id=hotel_id, **room_data.model_dump()))
-    await db.rooms.change_room_facilities(room_id=room_id, data=room_data)
+    await db.room_facilities.change_room_facilities(room_id=room_id, data=room_data)
     await db.commit()
     return {'status': 'OK'}
