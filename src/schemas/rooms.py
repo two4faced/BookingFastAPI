@@ -29,7 +29,6 @@ class RoomsPatch(BaseModel):
     price: int | None = Field(None)
     quantity: int | None = Field(None)
 
-    model_config = ConfigDict(from_attributes=True)
 
 class RoomsPatchRequest(BaseModel):
     title: str | None = Field(None)

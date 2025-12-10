@@ -66,17 +66,15 @@ async def edit_room(
     db: DBDep,
     hotel_id: int,
     room_id: int,
-    data: RoomsPatchRequest
+    room_data: RoomsPatchRequest
 ):
-    await db.rooms.edit(
-        RoomsPatch(**data.model_dump()),
-        is_patch = True,
-        id=room_id,
-        hotel_id=hotel_id
-    )
+    _room_data_dict = room_data.model_dump(exclude_unset=True)
+    _room_data = RoomsPatch(**_room_data_dict)
 
-    if data.facilities_ids:
-        await db.room_facilities.change_room_facilities(room_id=room_id, data=data)
+    await db.rooms.patch(_room_data, is_patch=True, id=room_id, hotel_id=hotel_id)
+
+    if room_data.facilities_ids:
+        await db.room_facilities.change_room_facilities(room_id=room_id, data=room_data)
 
     await db.commit()
 
