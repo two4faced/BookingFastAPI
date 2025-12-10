@@ -44,15 +44,6 @@ class BaseRepository:
         await self.session.execute(del_stmt)
 
     async def edit(self, data: BaseModel, is_patch: bool = False, **filter_by) -> None:
-        update_stmt = (
-            update(self.model)
-            .filter_by(**filter_by)
-            .values(**data.model_dump(exclude_unset=is_patch))
-        )
-        await self.session.execute(update_stmt)
-
-
-    async def patch(self, data: BaseModel, is_patch: bool = False, **filter_by) -> None:
         values_to_update = data.model_dump(exclude_unset=is_patch)
 
         filtered_values = {k: v for k, v in values_to_update.items() if v is not None}
