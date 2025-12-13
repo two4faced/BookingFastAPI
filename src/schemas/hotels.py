@@ -5,7 +5,6 @@ class HotelAdd(BaseModel):
     title: str
     location: str
 
-    model_config = ConfigDict(from_attributes=True)
 
 class Hotel(HotelAdd):
     id: int

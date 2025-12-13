@@ -3,6 +3,7 @@ from sqlalchemy import select
 from src.models.hotels import HotelsORM
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import HotelDataMapper
 from src.repositories.utils import rooms_ids_for_booking
 from src.schemas.hotels import Hotel
 
@@ -10,30 +11,8 @@ from src.schemas.hotels import Hotel
 class HotelsRepository(BaseRepository):
     model = HotelsORM
     schema = Hotel
+    mapper = HotelDataMapper
 
-    # async def get_all(
-    #         self,
-    #         location,
-    #         title,
-    #         limit,
-    #         offset,
-    # ) -> list[Hotel]:
-    #     query = select(HotelsORM)
-    #     if location:
-    #         query = query.filter(HotelsORM.location.icontains(location.strip()))
-    #     if title:
-    #         query = query.filter(HotelsORM.title.icontains(title.strip()))
-    #
-    #     print(query)
-    #
-    #     query = (
-    #         query
-    #         .limit(limit)
-    #         .offset(offset)
-    #     )
-    #     result = await self.session.execute(query)
-    #
-    #     return [Hotel.model_validate(hotel, from_attributes=True) for hotel in result.scalars().all()]
 
     async def get_filtered_by_time(
             self,
@@ -62,5 +41,7 @@ class HotelsRepository(BaseRepository):
             .limit(limit)
             .offset(offset)
         )
+
+        print(hotels_ids)
 
         return await self.get_all(HotelsORM.id.in_(hotels_ids))

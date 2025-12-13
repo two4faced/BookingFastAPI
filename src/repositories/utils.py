@@ -21,8 +21,6 @@ def rooms_ids_for_booking(
         .cte(name='rooms_count')
     )
 
-    print(rooms_count)
-
     rooms_left_table = (
         select(
             RoomsORM.id.label('room_id'),
