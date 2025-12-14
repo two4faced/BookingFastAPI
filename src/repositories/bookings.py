@@ -1,15 +1,14 @@
 from sqlalchemy import select
 
 from src.models.bookings import BookingsORM
-from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import BookingDataMapper
 from src.schemas.bookings import Bookings
-from src.schemas.rooms import Rooms
 
 
 class BookingsRepository(BaseRepository):
     model = BookingsORM
-    schema = Bookings
+    mapper = BookingDataMapper
 
     async def get_all_bookings(
             self,

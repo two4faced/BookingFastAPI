@@ -3,18 +3,18 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from src.models.facilities import FacilitiesORM, RoomFacilitiesORM
 from src.repositories.base import BaseRepository
-from src.schemas.facilities import Facilities, RoomFacility
+from src.repositories.mappers.mappers import FacilitiesDataMapper, RoomFacilitiesDataMapper
 from src.schemas.rooms import RoomsPatch
 
 
 class FacilitiesRepository(BaseRepository):
     model = FacilitiesORM
-    schema = Facilities
+    mapper = FacilitiesDataMapper
 
 
 class RoomFacilitiesRepository(BaseRepository):
     model = RoomFacilitiesORM
-    schema = RoomFacility
+    mapper = RoomFacilitiesDataMapper
 
     async def change_room_facilities(
             self,
