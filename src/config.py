@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
-
+    CACHE_HOST: str
+    CACHE_PORT: int
 
     @property
     def DB_URL(self):
