@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     CACHE_PORT: int
 
     @property
+    def CACHE_URL(self):
+        return f'redis://{self.CACHE_HOST}:{self.CACHE_PORT}'
+
+    @property
     def DB_URL(self):
         return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
 
