@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy import select
 
 from src.models.bookings import BookingsORM
@@ -23,4 +25,13 @@ class BookingsRepository(BaseRepository):
         )
         result = await self.session.execute(query)
 
-        return [Bookings.model_validate(hotel, from_attributes=True) for hotel in result.scalars().all()]
+        return [self.mapper.map_to_domain_entity(bookings) for bookings in result.scalars().all()]
+
+    async def get_bookings_with_today_checkin(self):
+        query = (
+            select(BookingsORM)
+            .filter(BookingsORM.date_from == date.today)
+        )
+        res = await self.session.execute(query)
+
+        return [self.mapper.map_to_domain_entity(bookings) for bookings in res.scalars().all()]
