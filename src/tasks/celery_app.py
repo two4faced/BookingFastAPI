@@ -9,3 +9,10 @@ celery_instance = Celery(
         'src.tasks.tasks'
     ]
 )
+
+celery_instance.conf.beat_schedule = {
+    'send_email_beat_schedule': {
+        'task': 'bookings_today_checkin',
+        'schedule': 5
+    }
+}
