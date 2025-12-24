@@ -6,4 +6,5 @@ async def test_add_hotel():
     hotel_data = HotelAdd(title='Отель 5 звёзд', location='г. Краснодар, ул. Красная, д. 134')
     async with get_db_manager() as db:
         new_hotel_data = await db.hotels.add(hotel_data)
+        await db.commit()
         print(f'{new_hotel_data=}')
