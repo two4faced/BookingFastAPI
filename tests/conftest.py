@@ -11,6 +11,18 @@ from src.schemas.rooms import RoomsAdd
 from src.utils.db_manager import DBManager
 
 
+@pytest.fixture()
+async def db() -> DBManager:
+    async with DBManager(session_factory=async_session_maker_null_pool) as db:
+        yield db
+
+
+@pytest.fixture(scope='session')
+async def ac() -> AsyncClient:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as ac:
+        yield ac
+
+
 @pytest.fixture(scope="session", autouse=True)
 def check_test_mode():
     assert settings.MODE == "TEST"
@@ -31,29 +43,22 @@ async def add_data(setup_database):
     with open('tests/mock_rooms.json', 'r', encoding='utf-8') as data:
         data_rooms = json.load(data)
 
-    async with DBManager(session_factory=async_session_maker_null_pool) as db:
+    async with DBManager(session_factory=async_session_maker_null_pool) as db_:
         for hotel in data_hotels:
-            await db.hotels.add(HotelAdd(title=hotel['title'], location=hotel['location']))
+            await db_.hotels.add(HotelAdd.model_validate(hotel))
         for room in data_rooms:
-            await db.rooms.add(RoomsAdd(
-                title=room['title'],
-                description=room['description'],
-                price=room['price'],
-                quantity=room['quantity'],
-                hotel_id=room['hotel_id'])
-            )
-        await db.commit()
+            await db_.rooms.add(RoomsAdd.model_validate(room))
+        await db_.commit()
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def register_user(add_data):
-    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as ac:
-        await ac.post(
-            '/auth/register',
-            json={
-                'name': 'pytest',
-                'nickname': 'pytest',
-                'email': 'coolemail@mail.ru',
-                'password': 'pytest1234'
-            }
-        )
+async def register_user(add_data, ac):
+    await ac.post(
+        '/auth/register',
+        json={
+            'name': 'pytest',
+            'nickname': 'pytest',
+            'email': 'coolemail@mail.ru',
+            'password': 'pytest1234'
+        }
+    )
