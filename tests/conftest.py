@@ -1,8 +1,10 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 import json
+from unittest import mock
 
-from src.api.dependencies import get_db
+mock.patch('fastapi_cache.decorator.cache', lambda *args, **kwargs: lambda f: f).start()
+
 from src.config import settings
 from src.database import Base, engine_null_pool, async_session_maker_null_pool
 from src.main import app
