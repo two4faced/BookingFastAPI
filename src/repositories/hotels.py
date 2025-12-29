@@ -40,6 +40,4 @@ class HotelsRepository(BaseRepository):
             .offset(offset)
         )
 
-        print(hotels_ids)
-
         return await self.get_all(HotelsORM.id.in_(hotels_ids))

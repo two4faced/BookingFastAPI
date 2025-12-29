@@ -5,11 +5,12 @@ from sqlalchemy import func, select
 from src.models.bookings import BookingsORM
 from src.models.rooms import RoomsORM
 
+
 def rooms_ids_for_booking(
-            date_from: date,
-            date_to: date,
-            hotel_id: int | None = None
-    ):
+        date_from: date,
+        date_to: date,
+        hotel_id: int | None = None
+):
     rooms_count = (
         select(BookingsORM.room_id, func.count('*').label('rooms_booked'))
         .select_from(BookingsORM)
