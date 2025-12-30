@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from src.models.hotels import HotelsORM
 from src.models.rooms import RoomsORM
@@ -21,7 +21,7 @@ class HotelsRepository(BaseRepository):
             offset,
             limit
     ):
-        rooms_ids_to_get = rooms_ids_for_booking(date_from, date_to)
+        rooms_ids_to_get = rooms_ids_for_booking(date_from=date_from, date_to=date_to)
 
         hotels_ids = (
             select(RoomsORM.hotel_id)
@@ -29,15 +29,14 @@ class HotelsRepository(BaseRepository):
             .filter(RoomsORM.id.in_(rooms_ids_to_get))
         )
 
+        query = select(HotelsORM).filter(HotelsORM.id.in_(hotels_ids))
+
         if location:
-            hotels_ids = hotels_ids.filter(HotelsORM.location.icontains(location.strip()))
+            query = query.filter(HotelsORM.location.icontains(location.strip()))
         if title:
-            hotels_ids = hotels_ids.filter(HotelsORM.title.icontains(title.strip()))
+            query = query.filter(HotelsORM.title.icontains(title.strip()))
 
-        hotels_ids = (
-            hotels_ids
-            .limit(limit)
-            .offset(offset)
-        )
+        query = query.limit(limit).offset(offset)
+        result = await self.session.execute(query)
 
-        return await self.get_all(HotelsORM.id.in_(hotels_ids))
+        return [self.mapper.map_to_domain_entity(hotel) for hotel in result.scalars().all()]
