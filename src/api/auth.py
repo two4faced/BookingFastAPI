@@ -24,8 +24,8 @@ async def register_user(
     try:
         await db.users.add(new_user_data)
         await db.commit()
-    except IntegrityError as exception:
-        return {'error': {str(exception.orig)}}
+    except IntegrityError:
+        raise HTTPException(404, 'Этот никнейм или почта уже заняты')
 
     return {'status': 'OK'}
 
@@ -36,9 +36,10 @@ async def login_user(
         response: Response,
         db: DBDep
 ):
-    user = await db.users.get_user_with_hashed_pass(email=user_data.email)
-    if not user:
+    is_user = await db.users.get_one_or_none(email=user_data.email)
+    if not is_user:
         raise HTTPException(status_code=401, detail='Такого пользователя не существует.')
+    user = await db.users.get_user_with_hashed_pass(email=user_data.email)
     if not AuthService().verify_password(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail='Имя пользователя или пароль неверные.')
     access_token = AuthService().create_access_token({'user_id': user.id})
