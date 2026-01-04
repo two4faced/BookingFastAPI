@@ -1,16 +1,16 @@
+# ruff: noqa: E402
+
 import pytest
-from httpx import AsyncClient, ASGITransport, Cookies
+from httpx import AsyncClient, ASGITransport
 import json
 from unittest import mock
-
-from src.schemas.users import UserLogIn
 
 mock.patch('fastapi_cache.decorator.cache', lambda *args, **kwargs: lambda f: f).start()
 
 from src.config import settings
 from src.database import Base, engine_null_pool, async_session_maker_null_pool
 from src.main import app
-from src.models import *
+from src.models import *  # noqa
 from src.schemas.hotels import HotelAdd
 from src.schemas.rooms import RoomsAdd
 from src.utils.db_manager import DBManager

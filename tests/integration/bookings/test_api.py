@@ -1,8 +1,6 @@
 import pytest
-from sqlalchemy import delete
 
-from src.database import engine_null_pool, async_session_maker_null_pool
-from src.models import BookingsORM
+from src.database import async_session_maker_null_pool
 from src.utils.db_manager import DBManager
 
 
