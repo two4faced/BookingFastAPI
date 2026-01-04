@@ -2,50 +2,35 @@ import pytest
 from pydantic import EmailStr
 
 
-@pytest.mark.parametrize('name, nickname, email, password, status_code', [
-    ('franz', 'franz__', 'fra123@gmail.com', '3838dkmwi03', 200),
-    ('qwerty', 'qw2erty', 'fra123@gmail.com', '454gfdsa', 404),
-    ('qwerty', 'qw2erty', 'abcde', '454gfdsa', 422)
-])
+@pytest.mark.parametrize(
+    'name, nickname, email, password, status_code',
+    [
+        ('franz', 'franz__', 'fra123@gmail.com', '3838dkmwi03', 200),
+        ('qwerty', 'qw2erty', 'fra123@gmail.com', '454gfdsa', 404),
+        ('qwerty', 'qw2erty', 'abcde', '454gfdsa', 422),
+    ],
+)
 async def test_register_user(
-        ac,
-        name: str,
-        nickname: str,
-        email: EmailStr,
-        password: str,
-        status_code: int
+    ac, name: str, nickname: str, email: EmailStr, password: str, status_code: int
 ):
     response = await ac.post(
         '/auth/register',
-        json={
-            'name': name,
-            'nickname': nickname,
-            'email': email,
-            'password': password
-        }
+        json={'name': name, 'nickname': nickname, 'email': email, 'password': password},
     )
 
     assert response.status_code == status_code
 
 
-@pytest.mark.parametrize('email, password, status_code', [
-    ('qwe33@gmail.com', '454gfdsa', 401),
-    ('fra123@gmail.com', '12345', 401),
-    ('fra123@gmail.com', '3838dkmwi03', 200)
-])
-async def test_login_user(
-        ac,
-        email: EmailStr,
-        password: str,
-        status_code: int
-):
-    response = await ac.post(
-        '/auth/login',
-        json={
-            'email': email,
-            'password': password
-        }
-    )
+@pytest.mark.parametrize(
+    'email, password, status_code',
+    [
+        ('qwe33@gmail.com', '454gfdsa', 401),
+        ('fra123@gmail.com', '12345', 401),
+        ('fra123@gmail.com', '3838dkmwi03', 200),
+    ],
+)
+async def test_login_user(ac, email: EmailStr, password: str, status_code: int):
+    response = await ac.post('/auth/login', json={'email': email, 'password': password})
 
     assert response.status_code == status_code
     if response.status_code == 200:

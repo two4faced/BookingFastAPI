@@ -3,7 +3,10 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from src.models.facilities import FacilitiesORM, RoomFacilitiesORM
 from src.repositories.base import BaseRepository
-from src.repositories.mappers.mappers import FacilitiesDataMapper, RoomFacilitiesDataMapper
+from src.repositories.mappers.mappers import (
+    FacilitiesDataMapper,
+    RoomFacilitiesDataMapper,
+)
 from src.schemas.rooms import RoomsPatch
 
 
@@ -17,14 +20,12 @@ class RoomFacilitiesRepository(BaseRepository):
     mapper = RoomFacilitiesDataMapper
 
     async def change_room_facilities(
-            self,
-            room_id: int,
-            data: RoomsPatch,
+        self,
+        room_id: int,
+        data: RoomsPatch,
     ):
-
         data_to_insert = [
-            {'room_id': room_id, 'facility_id': facility_id}
-            for facility_id in data.facilities_ids
+            {'room_id': room_id, 'facility_id': facility_id} for facility_id in data.facilities_ids
         ]
 
         insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)
@@ -33,9 +34,9 @@ class RoomFacilitiesRepository(BaseRepository):
         await self.session.execute(insert_stmt)
 
         condition = and_(
-        RoomFacilitiesORM.room_id == room_id,
-        RoomFacilitiesORM.facility_id.not_in(data.facilities_ids)
-    )
+            RoomFacilitiesORM.room_id == room_id,
+            RoomFacilitiesORM.facility_id.not_in(data.facilities_ids),
+        )
 
         delete_stmt = delete(RoomFacilitiesORM).where(condition)
 

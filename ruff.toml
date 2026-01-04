@@ -1,0 +1,9 @@
+exclude = [
+    "src/models/rooms.py",
+    "src/models/facilities.py"
+]
+
+line-length = 100
+
+[format]
+quote-style = "single"

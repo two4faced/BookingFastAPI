@@ -13,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "cf4a612759c5"
-down_revision: Union[str, Sequence[str], None] = "fc66aed68e4a"
+revision: str = 'cf4a612759c5'
+down_revision: Union[str, Sequence[str], None] = 'fc66aed68e4a'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -22,25 +22,25 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     op.create_table(
-        "bookings",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("room_id", sa.Integer(), nullable=False),
-        sa.Column("date_from", sa.Date(), nullable=False),
-        sa.Column("date_to", sa.Date(), nullable=False),
-        sa.Column("price", sa.Integer(), nullable=False),
+        'bookings',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('room_id', sa.Integer(), nullable=False),
+        sa.Column('date_from', sa.Date(), nullable=False),
+        sa.Column('date_to', sa.Date(), nullable=False),
+        sa.Column('price', sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
-            ["room_id"],
-            ["rooms.id"],
+            ['room_id'],
+            ['rooms.id'],
         ),
         sa.ForeignKeyConstraint(
-            ["user_id"],
-            ["users.id"],
+            ['user_id'],
+            ['users.id'],
         ),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint('id'),
     )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_table("bookings")
+    op.drop_table('bookings')

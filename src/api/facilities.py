@@ -19,4 +19,3 @@ async def add_facility(facility_data: FacilityAdd, db: DBDep):
     await db.commit()
 
     return {'status': 'OK', 'data': result}
-

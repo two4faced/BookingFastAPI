@@ -12,6 +12,7 @@ class PaginationParams(BaseModel):
     page: Annotated[int | None, Query(1, ge=1)]
     per_page: Annotated[int | None, Query(None, ge=1, lt=100)]
 
+
 PaginationDep = Annotated[PaginationParams, Depends()]
 
 
@@ -25,6 +26,7 @@ def get_token(request: Request) -> str:
 def get_current_user_id(token: str = Depends(get_token)) -> int:
     data = AuthService().decode_jwt(token)
     return data['user_id']
+
 
 UserIdDep = Annotated[int, Depends(get_current_user_id)]
 

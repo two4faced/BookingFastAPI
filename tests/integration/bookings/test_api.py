@@ -4,22 +4,20 @@ from src.database import async_session_maker_null_pool
 from src.utils.db_manager import DBManager
 
 
-@pytest.mark.parametrize('room_id, date_from, date_to, status_code', [
-    (1, "2024-08-01", "2024-08-10", 200),
-    (1, "2024-08-02", "2024-08-11", 200),
-    (1, "2024-08-03", "2024-08-12", 200),
-    (1, "2024-08-04", "2024-08-13", 200),
-    (1, "2024-08-05", "2024-08-14", 200),
-    (1, "2024-08-06", "2024-08-15", 404),
-    (1, "2024-08-17", "2024-08-25", 200),
-                         ])
+@pytest.mark.parametrize(
+    'room_id, date_from, date_to, status_code',
+    [
+        (1, '2024-08-01', '2024-08-10', 200),
+        (1, '2024-08-02', '2024-08-11', 200),
+        (1, '2024-08-03', '2024-08-12', 200),
+        (1, '2024-08-04', '2024-08-13', 200),
+        (1, '2024-08-05', '2024-08-14', 200),
+        (1, '2024-08-06', '2024-08-15', 404),
+        (1, '2024-08-17', '2024-08-25', 200),
+    ],
+)
 async def test_add_booking(
-        room_id: int,
-        date_from: str,
-        date_to: str,
-        status_code: int,
-        db,
-        authenticated_ac
+    room_id: int, date_from: str, date_to: str, status_code: int, db, authenticated_ac
 ):
     response = await authenticated_ac.post(
         '/bookings',
@@ -27,7 +25,7 @@ async def test_add_booking(
             'room_id': room_id,
             'date_from': date_from,
             'date_to': date_to,
-        }
+        },
     )
     result = response.json()
 
@@ -46,18 +44,21 @@ async def delete_all_bookings():
     assert len(await db_.bookings.get_all()) == 0
 
 
-@pytest.mark.parametrize('room_id, date_from, date_to, rooms_booked_count', [
-    (1, "2024-08-01", "2024-08-10", 1),
-    (1, "2024-08-02", "2024-08-11", 2),
-    (1, "2024-08-03", "2024-08-12", 3)
-])
+@pytest.mark.parametrize(
+    'room_id, date_from, date_to, rooms_booked_count',
+    [
+        (1, '2024-08-01', '2024-08-10', 1),
+        (1, '2024-08-02', '2024-08-11', 2),
+        (1, '2024-08-03', '2024-08-12', 3),
+    ],
+)
 async def test_add_and_get_bookings(
-        room_id: int,
-        date_from: str,
-        date_to: str,
-        rooms_booked_count: int,
-        delete_all_bookings,
-        authenticated_ac
+    room_id: int,
+    date_from: str,
+    date_to: str,
+    rooms_booked_count: int,
+    delete_all_bookings,
+    authenticated_ac,
 ):
     response_post = await authenticated_ac.post(
         '/bookings',
@@ -65,7 +66,7 @@ async def test_add_and_get_bookings(
             'room_id': room_id,
             'date_from': date_from,
             'date_to': date_to,
-        }
+        },
     )
     assert response_post.status_code == 200
 

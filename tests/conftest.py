@@ -21,6 +21,7 @@ async def db() -> DBManager:
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
 
+
 # async def get_db_null_pool() -> DBManager:
 #     async with DBManager(session_factory=async_session_maker_null_pool) as db:
 #         yield db
@@ -34,19 +35,19 @@ async def ac() -> AsyncClient:
         yield ac
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def check_test_mode():
-    assert settings.MODE == "TEST"
+    assert settings.MODE == 'TEST'
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 async def setup_database(check_test_mode):
     async with engine_null_pool.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 async def add_data(setup_database):
     with open('tests/mock_hotels.json', 'r', encoding='utf-8') as data:
         data_hotels = json.load(data)
@@ -62,7 +63,7 @@ async def add_data(setup_database):
         await db_.commit()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 async def register_user(add_data, ac):
     await ac.post(
         '/auth/register',
@@ -70,19 +71,15 @@ async def register_user(add_data, ac):
             'name': 'pytest',
             'nickname': 'pytest',
             'email': 'coolemail@mail.ru',
-            'password': 'pytest1234'
-        }
+            'password': 'pytest1234',
+        },
     )
 
 
 @pytest.fixture(scope='session')
 async def authenticated_ac(register_user, ac):
     response = await ac.post(
-        '/auth/login',
-        json={
-            'email': 'coolemail@mail.ru',
-            'password': 'pytest1234'
-        }
+        '/auth/login', json={'email': 'coolemail@mail.ru', 'password': 'pytest1234'}
     )
 
     assert response.status_code == 200

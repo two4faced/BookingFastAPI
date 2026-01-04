@@ -22,11 +22,14 @@ class RoomsAdd(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class Rooms(RoomsAdd):
     id: int
 
+
 class RoomsWithRels(Rooms):
     facilities: list[Facilities]
+
 
 class RoomsPatch(BaseModel):
     title: str | None = Field(None)

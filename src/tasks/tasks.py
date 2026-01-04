@@ -18,17 +18,19 @@ def resize_image(image_path: str):
     name, ext = os.path.splitext(base_name)
 
     for size in sizes:
-        img_resized = img.resize((size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS)
-        new_file_name = f"{name}_{size}px{ext}"
+        img_resized = img.resize(
+            (size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS
+        )
+        new_file_name = f'{name}_{size}px{ext}'
         output_path = os.path.join(output_folder, new_file_name)
         img_resized.save(output_path)
 
-    print(f"Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}")
+    print(f'Изображение сохранено в следующих размерах: {sizes} в папке {output_folder}')
 
 
 async def bookings_today_checkin_helper():
     print('*')
-    async  with DBManager(session_factory=async_session_maker_null_pool) as db:
+    async with DBManager(session_factory=async_session_maker_null_pool) as db:
         bookings = await db.bookings.get_bookings_with_today_checkin()
         print(f'{bookings=}')
 
