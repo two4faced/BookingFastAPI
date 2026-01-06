@@ -1,3 +1,5 @@
+import logging
+
 from asyncpg.exceptions import UniqueViolationError
 from sqlalchemy.exc import NoResultFound, IntegrityError
 from pydantic import BaseModel
@@ -44,9 +46,15 @@ class BaseRepository:
             model = result.scalars().one()
             inserted_data = self.mapper.map_to_domain_entity(model)
         except IntegrityError as exc:
+            logging.error(
+                f'Не удалось добавить данные в базу, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+            )
             if isinstance(exc.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from exc
             else:
+                logging.error(
+                    f'Незнакомая ошибка, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+                )
                 raise exc
 
         return inserted_data
