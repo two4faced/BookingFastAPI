@@ -9,7 +9,7 @@ async def test_post_facilities(ac, db):
     response = await ac.post('/facilities', json={'title': facility_title})
 
     assert response.status_code == 200
-    assert db.facilities.get_one_or_none(title=facility_title)
+    assert await db.facilities.get_one_or_none(title=facility_title)
 
     result = response.json()
 

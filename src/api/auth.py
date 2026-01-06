@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
-from sqlalchemy.exc import IntegrityError
 
 from src.api.dependencies import UserIdDep, DBDep
+from src.exceptions import ObjectAlreadyExistsException
 from src.schemas.users import UserRequestAdd, UserAdd, UserLogIn
 from src.services.auth import AuthService
 
@@ -21,8 +21,8 @@ async def register_user(user_data: UserRequestAdd, db: DBDep):
     try:
         await db.users.add(new_user_data)
         await db.commit()
-    except IntegrityError:
-        raise HTTPException(404, 'Этот никнейм или почта уже заняты')
+    except ObjectAlreadyExistsException:
+        raise HTTPException(status_code=409, detail='Данный пользователь уже зарегистрирован')
 
     return {'status': 'OK'}
 

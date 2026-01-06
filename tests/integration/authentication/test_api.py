@@ -6,7 +6,7 @@ from pydantic import EmailStr
     'name, nickname, email, password, status_code',
     [
         ('franz', 'franz__', 'fra123@gmail.com', '3838dkmwi03', 200),
-        ('qwerty', 'qw2erty', 'fra123@gmail.com', '454gfdsa', 404),
+        ('qwerty', 'qw2erty', 'fra123@gmail.com', '454gfdsa', 409),
         ('qwerty', 'qw2erty', 'abcde', '454gfdsa', 422),
     ],
 )
