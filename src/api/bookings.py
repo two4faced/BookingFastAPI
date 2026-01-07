@@ -38,8 +38,8 @@ async def book_room(user_id: UserIdDep, booking_data: BookingsAddRequest, db: DB
     )
     try:
         booking = await db.bookings.add_booking(_booking_data, hotel_id=hotel.id)
-    except AllRoomsBookedException as ex:
-        raise HTTPException(status_code=409, detail=ex.detail)
+    except AllRoomsBookedException as exc:
+        raise HTTPException(status_code=409, detail=exc.detail)
 
     await db.commit()
     return {'status': 'OK', 'data': booking}

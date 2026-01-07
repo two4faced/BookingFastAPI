@@ -1,17 +1,19 @@
 from datetime import date
 
+from src.exceptions import ObjectNotFoundException, HotelNotFoundException
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.services.base import BaseService
 
 
 class HotelsService(BaseService):
-    async def get_hotels(self,
+    async def get_hotels(
+        self,
         pagination,
         title: str | None,
         location: str | None,
         date_from: date,
         date_to: date,
-):
+    ):
         per_page = pagination.per_page or 5
 
         return await self.db.hotels.get_filtered_by_time(
@@ -43,3 +45,9 @@ class HotelsService(BaseService):
     async def patch_hotel(self, hotel_id: int, hotel_data: HotelPatch):
         await self.db.hotels.edit(hotel_data, is_patch=True, id=hotel_id)
         await self.db.commit()
+
+    async def check_hotel_existence(self, hotel_id) -> None:
+        try:
+            await self.db.hotels.get_one(id=hotel_id)
+        except ObjectNotFoundException:
+            raise HotelNotFoundException

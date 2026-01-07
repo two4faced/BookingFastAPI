@@ -26,15 +26,9 @@ async def get_hotels(
     date_to: date = Query(example='2024-08-10'),
 ):
     try:
-        hotels = await HotelsService(db).get_hotels(
-            pagination,
-            title,
-            location,
-            date_from,
-            date_to
-        )
-    except DateFromLaterThenOrEQDateToException as ex:
-        raise HTTPException(status_code=400, detail=ex.detail)
+        hotels = await HotelsService(db).get_hotels(pagination, title, location, date_from, date_to)
+    except DateFromLaterThenOrEQDateToException as exc:
+        raise HTTPException(status_code=400, detail=exc.detail)
 
     return {'status': 'OK', 'hotels': hotels}
 
