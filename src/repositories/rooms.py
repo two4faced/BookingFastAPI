@@ -26,7 +26,7 @@ class RoomsRepository(BaseRepository):
 
         query = (
             select(self.model)
-            .options(selectinload(self.model.facilities))
+            .options(selectinload(self.model.facilities))  # type: ignore
             .filter(RoomsORM.id.in_(rooms_ids_to_get))
         )
 

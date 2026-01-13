@@ -24,8 +24,8 @@ class RoomFacilitiesRepository(BaseRepository):
         room_id: int,
         data: RoomsPatch,
     ):
-        data_to_insert = [
-            {'room_id': room_id, 'facility_id': facility_id} for facility_id in data.facilities_ids
+        data_to_insert = [  # type: ignore
+            {'room_id': room_id, 'facility_id': facility_id} for facility_id in data.facilities_ids  # type: ignore
         ]
 
         insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)
@@ -33,9 +33,9 @@ class RoomFacilitiesRepository(BaseRepository):
 
         await self.session.execute(insert_stmt)
 
-        condition = and_(
-            RoomFacilitiesORM.room_id == room_id,
-            RoomFacilitiesORM.facility_id.not_in(data.facilities_ids),
+        condition = and_(  # type: ignore
+            RoomFacilitiesORM.room_id == room_id,  # type: ignore
+            RoomFacilitiesORM.facility_id.not_in(data.facilities_ids),  # type: ignore
         )
 
         delete_stmt = delete(RoomFacilitiesORM).where(condition)

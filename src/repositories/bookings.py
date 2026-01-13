@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Sequence
 
 from sqlalchemy import select
 
@@ -25,7 +26,7 @@ class BookingsRepository(BaseRepository):
             date_from=data.date_from, date_to=data.date_to, hotel_id=hotel_id
         )
         rooms_ids_to_book_res = await self.session.execute(query)
-        rooms_ids_to_book: list[int] = rooms_ids_to_book_res.scalars().all()
+        rooms_ids_to_book: Sequence[int] = rooms_ids_to_book_res.scalars().all()
 
         if data.room_id in rooms_ids_to_book:
             new_booking = await self.add(data)

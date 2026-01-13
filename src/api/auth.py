@@ -3,9 +3,8 @@ from fastapi import APIRouter, HTTPException, Response
 from src.api.dependencies import UserIdDep, DBDep
 from src.exceptions import ObjectAlreadyExistsException, UserNotFoundException, UserNotFoundHTTPException, \
     WrongPassOrEmailException, WrongPassOrEmailHTTPException
-from src.schemas.users import UserRequestAdd, UserLogIn
+from src.schemas.users import UserRequestAdd, UserLogIn, User
 from src.services.auth import AuthService
-
 
 router = APIRouter(prefix='/auth', tags=['Авторизация и Аутентификация'])
 
@@ -35,7 +34,7 @@ async def login_user(user_data: UserLogIn, response: Response, db: DBDep):
 
 @router.get('/me')
 async def get_me(user_id: UserIdDep, db: DBDep):
-    user = await AuthService(db).get_me(user_id)
+    user: User = await AuthService(db).get_me(user_id)  # type: ignore
     return user
 
 

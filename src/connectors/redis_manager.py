@@ -15,16 +15,16 @@ class RedisManager:
         logging.info(f'Успешно подключено к Redis {self.host=}, {self.port=}')
 
     async def get(self, key: str):
-        return await self.redis.get(key)
+        return await self.redis.get(key)  # type: ignore
 
     async def set(self, key: str, value: str, expire: int | None = None):
         if expire:
-            await self.redis.set(key, value, ex=expire)
+            await self.redis.set(key, value, ex=expire)  # type: ignore
         else:
-            await self.redis.set(key, value)
+            await self.redis.set(key, value)  # type: ignore
 
     async def delete(self, key):
-        return await self.redis.delete(key)
+        return await self.redis.delete(key)  # type: ignore
 
     async def close(self):
         if self.redis:
