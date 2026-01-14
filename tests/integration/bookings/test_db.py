@@ -1,9 +1,10 @@
 from datetime import date
 
 from src.schemas.bookings import BookingsAdd, BookingsAddRequest
+from src.utils.db_manager import DBManager
 
 
-async def test_booking_crud(db):
+async def test_booking_crud(db: DBManager):
     user_id = (await db.users.get_all())[0].id
     room_id = (await db.rooms.get_all())[0].id
     booking_data = BookingsAdd(

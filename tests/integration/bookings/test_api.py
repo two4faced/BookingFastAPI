@@ -1,4 +1,5 @@
 import pytest
+from httpx import AsyncClient
 
 from src.database import async_session_maker_null_pool
 from src.utils.db_manager import DBManager
@@ -17,7 +18,7 @@ from src.utils.db_manager import DBManager
     ],
 )
 async def test_add_booking(
-    room_id: int, date_from: str, date_to: str, status_code: int, db, authenticated_ac
+    room_id: int, date_from: str, date_to: str, status_code: int, db, authenticated_ac: AsyncClient
 ):
     response = await authenticated_ac.post(
         '/bookings',
@@ -58,7 +59,7 @@ async def test_add_and_get_bookings(
     date_to: str,
     rooms_booked_count: int,
     delete_all_bookings,
-    authenticated_ac,
+    authenticated_ac: AsyncClient,
 ):
     response_post = await authenticated_ac.post(
         '/bookings',

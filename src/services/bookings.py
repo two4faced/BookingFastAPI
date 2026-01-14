@@ -1,4 +1,4 @@
-from src.api.dependencies import UserIdDep, PaginationDep
+from src.api.dependencies import UserIdDep
 from src.schemas.bookings import BookingsAddRequest, BookingsAdd
 from src.services.base import BaseService
 from src.services.rooms import RoomsService
@@ -8,10 +8,7 @@ class BookingsService(BaseService):
     async def get_bookings(self):
         return await self.db.bookings.get_all()
 
-    async def get_my_bookings(
-            self,
-            user_id: UserIdDep
-    ):
+    async def get_my_bookings(self, user_id: UserIdDep):
         return await self.db.bookings.get_all(user_id=user_id)
 
     async def book_room(self, user_id: UserIdDep, booking_data: BookingsAddRequest):

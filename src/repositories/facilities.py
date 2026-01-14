@@ -25,7 +25,8 @@ class RoomFacilitiesRepository(BaseRepository):
         data: RoomsPatch,
     ):
         data_to_insert = [  # type: ignore
-            {'room_id': room_id, 'facility_id': facility_id} for facility_id in data.facilities_ids  # type: ignore
+            {'room_id': room_id, 'facility_id': facility_id}
+            for facility_id in data.facilities_ids  # type: ignore
         ]
 
         insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)

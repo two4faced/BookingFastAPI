@@ -10,7 +10,7 @@ from src.exceptions import (
     RoomNotFoundException,
     HotelNotFoundException,
 )
-from src.schemas.rooms import RoomsAdd, RoomsPatch, RoomsAddRequest, RoomsPatchRequest
+from src.schemas.rooms import RoomsAddRequest, RoomsPatchRequest
 from src.services.rooms import RoomsService
 
 router = APIRouter(prefix='/hotels', tags=['Номера'])

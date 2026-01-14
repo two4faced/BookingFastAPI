@@ -19,6 +19,7 @@ class HotelNotFoundException(ObjectNotFoundException):
 class RoomNotFoundException(ObjectNotFoundException):
     detail = 'Номер не найден'
 
+
 class UserNotFoundException(ObjectNotFoundException):
     detail = 'Пользователь не найден'
 
@@ -33,6 +34,7 @@ class AllRoomsBookedException(BookingException):
 
 class DateFromLaterThenOrEQDateToException(BookingException):
     detail = 'Дата заезда позже или равна дате выезда'
+
 
 class WrongPassOrEmailException(BookingException):
     detail = 'Имя пользователя или пароль неверные'
@@ -55,13 +57,16 @@ class RoomNotFoundHTTPException(BookingHTTPException):
     status_code = 404
     detail = 'Данный номер не найден'
 
+
 class UserNotFoundHTTPException(BookingHTTPException):
     status_code = 401
     detail = 'Пользователь не найден'
 
+
 class WrongPassOrEmailHTTPException(BookingHTTPException):
     status_code = 401
     detail = 'Пользователь не найден'
+
 
 class AllRoomsBookedHTTPException(BookingHTTPException):
     status_code = 409

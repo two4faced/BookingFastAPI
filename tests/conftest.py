@@ -1,4 +1,5 @@
 # ruff: noqa: E402
+from typing import AsyncGenerator, Any
 
 import pytest
 from httpx import AsyncClient, ASGITransport
@@ -17,20 +18,13 @@ from src.utils.db_manager import DBManager
 
 
 @pytest.fixture()
-async def db() -> DBManager:
+async def db() -> AsyncGenerator[DBManager, Any]:
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db
 
 
-# async def get_db_null_pool() -> DBManager:
-#     async with DBManager(session_factory=async_session_maker_null_pool) as db:
-#         yield db
-#
-# app.dependency_overrides[get_db] = get_db_null_pool
-
-
 @pytest.fixture(scope='session')
-async def ac() -> AsyncClient:
+async def ac() -> AsyncGenerator[AsyncClient, Any]:
     async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as ac:
         yield ac
 

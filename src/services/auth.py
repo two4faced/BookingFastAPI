@@ -41,7 +41,6 @@ class AuthService(BaseService):
         user = await self.db.users.get_one_or_none(id=user_id)
         return user
 
-
     def create_access_token(self, data: dict) -> str:
         to_encode = data.copy()
         expire = datetime.datetime.now(timezone.utc) + timedelta(
