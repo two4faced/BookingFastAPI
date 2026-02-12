@@ -12,8 +12,8 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision: str = "5d04563dfbee"
-down_revision: Union[str, Sequence[str], None] = "0d5857d9c8ec"
+revision: str = '5d04563dfbee'
+down_revision: Union[str, Sequence[str], None] = '0d5857d9c8ec'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -21,24 +21,24 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     op.create_table(
-        "ratings",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("hotel_id", sa.Integer(), nullable=False),
-        sa.Column("rating", sa.Integer(), nullable=False),
-        sa.Column("rating_text", sa.Text(), nullable=False),
+        'ratings',
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('hotel_id', sa.Integer(), nullable=False),
+        sa.Column('rating', sa.Integer(), nullable=False),
+        sa.Column('rating_text', sa.Text(), nullable=False),
         sa.ForeignKeyConstraint(
-            ["hotel_id"],
-            ["hotels.id"],
+            ['hotel_id'],
+            ['hotels.id'],
         ),
         sa.ForeignKeyConstraint(
-            ["user_id"],
-            ["users.id"],
+            ['user_id'],
+            ['users.id'],
         ),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint('id'),
     )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_table("ratings")
+    op.drop_table('ratings')

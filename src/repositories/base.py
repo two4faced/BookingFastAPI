@@ -1,14 +1,18 @@
 import logging
 from typing import Any
 
-from asyncpg.exceptions import UniqueViolationError
-from sqlalchemy.exc import NoResultFound, IntegrityError
+from asyncpg.exceptions import UniqueViolationError, StringDataRightTruncationError
+from sqlalchemy.exc import NoResultFound, IntegrityError, DBAPIError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import Base
-from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistsException
+from src.exceptions import (
+    ObjectNotFoundException,
+    ObjectAlreadyExistsException,
+    IncorrectStringValueException,
+)
 from src.repositories.mappers.base import DataMapper
 
 
@@ -55,6 +59,14 @@ class BaseRepository:
             )
             if isinstance(exc.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from exc
+            else:
+                logging.error(
+                    f'Незнакомая ошибка, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+                )
+                raise exc
+        except DBAPIError as exc:
+            if isinstance(exc.orig.__cause__, StringDataRightTruncationError):
+                raise IncorrectStringValueException from exc
             else:
                 logging.error(
                     f'Незнакомая ошибка, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'

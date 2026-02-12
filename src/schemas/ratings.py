@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict, conint
 
 
 class RatingRequestAdd(BaseModel):
-    rating: int | conint(ge=1, le=5)
+    rating: conint(ge=1, le=5)  # type: ignore
     rating_text: str
 
     model_config = ConfigDict(from_attributes=True)

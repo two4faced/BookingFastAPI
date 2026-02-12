@@ -8,6 +8,10 @@ class BookingException(Exception):
         super().__init__(self.detail, *args)
 
 
+class IncorrectStringValueException(BookingException):
+    detail = 'Неверное значение строки'
+
+
 class ObjectNotFoundException(BookingException):
     detail = 'Объект не найден'
 
@@ -71,3 +75,8 @@ class WrongPassOrEmailHTTPException(BookingHTTPException):
 class AllRoomsBookedHTTPException(BookingHTTPException):
     status_code = 409
     detail = 'Не осталось свободных номеров'
+
+
+class StringIsToLongHTTPException(BookingHTTPException):
+    status_code = 400
+    detail = 'Длина строки превышает допустимый лимит'

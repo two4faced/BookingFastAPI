@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import ForeignKey, Integer, Text, CheckConstraint
+from sqlalchemy import ForeignKey, Integer, CheckConstraint, VARCHAR
 
 from src.database import Base
 
@@ -11,4 +11,4 @@ class RatingsORM(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     hotel_id: Mapped[int] = mapped_column(ForeignKey('hotels.id'))
     rating: Mapped[int] = mapped_column(Integer, CheckConstraint('rating > 0 AND rating <= 5'))
-    rating_text: Mapped[int] = mapped_column(Text)
+    rating_text: Mapped[int] = mapped_column(VARCHAR(1000))
