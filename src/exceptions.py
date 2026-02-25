@@ -57,6 +57,11 @@ class HotelNotFoundHTTPException(BookingHTTPException):
     detail = 'Данный отель не найден'
 
 
+class HotelAlreadyExistsHTTPException(BookingHTTPException):
+    status_code = 400
+    detail = 'Данный отель уже существует'
+
+
 class RoomNotFoundHTTPException(BookingHTTPException):
     status_code = 404
     detail = 'Данный номер не найден'

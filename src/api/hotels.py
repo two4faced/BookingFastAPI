@@ -7,7 +7,7 @@ from src.api.dependencies import PaginationDep, DBDep
 from src.exceptions import (
     ObjectNotFoundException,
     DateFromLaterThenOrEQDateToException,
-    HotelNotFoundHTTPException,
+    HotelNotFoundHTTPException, HotelNotFoundException,
 )
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelsService
@@ -30,7 +30,7 @@ async def get_hotels(
     except DateFromLaterThenOrEQDateToException as exc:
         raise HTTPException(status_code=400, detail=exc.detail)
 
-    return {'status': 'OK', 'hotels': hotels}
+    return {'hotels': hotels}
 
 
 @router.get('/{hotel_id}', summary='Получить один отель')
@@ -69,17 +69,26 @@ async def create_hotel(
 
 @router.delete('/{hotel_id}', summary='Удалить отель')
 async def delete_hotel(hotel_id: int, db: DBDep):
-    await HotelsService(db).delete_hotel(hotel_id)
+    try:
+        await HotelsService(db).delete_hotel(hotel_id)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
     return {'status': 'OK'}
 
 
 @router.put('/{hotel_id}', summary='Изменить отель')
 async def change_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
-    await HotelsService(db).change_hotel(hotel_id, hotel_data)
+    try:
+        await HotelsService(db).change_hotel(hotel_id, hotel_data)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
     return {'status': 'OK'}
 
 
 @router.patch('/{hotel_id}', summary='Частично изменить отель')
 async def patch_hotel(hotel_id: int, hotel_data: HotelPatch, db: DBDep):
-    await HotelsService(db).patch_hotel(hotel_id, hotel_data)
+    try:
+        await HotelsService(db).patch_hotel(hotel_id, hotel_data)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
     return {'status': 'OK'}

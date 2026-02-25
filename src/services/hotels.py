@@ -1,6 +1,7 @@
 from datetime import date
 
-from src.exceptions import ObjectNotFoundException, HotelNotFoundException
+from src.exceptions import ObjectNotFoundException, HotelNotFoundException, ObjectAlreadyExistsException, \
+    HotelAlreadyExistsHTTPException
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.services.base import BaseService
 
@@ -29,20 +30,29 @@ class HotelsService(BaseService):
         return await self.db.hotels.get_one(id=hotel_id)
 
     async def create_hotel(self, hotel_data: HotelAdd):
-        result = await self.db.hotels.add(hotel_data)
-        await self.db.commit()
+        try:
+            result = await self.db.hotels.add(hotel_data)
+            await self.db.commit()
+        except ObjectAlreadyExistsException:
+            raise HotelAlreadyExistsHTTPException
 
         return result
 
     async def delete_hotel(self, hotel_id: int):
+        await self.check_hotel_existence(hotel_id)
+
         await self.db.hotels.delete(id=hotel_id)
         await self.db.commit()
 
     async def change_hotel(self, hotel_id: int, hotel_data: HotelAdd):
+        await self.check_hotel_existence(hotel_id)
+
         await self.db.hotels.edit(hotel_data, id=hotel_id)
         await self.db.commit()
 
     async def patch_hotel(self, hotel_id: int, hotel_data: HotelPatch):
+        await self.check_hotel_existence(hotel_id)
+
         await self.db.hotels.edit(hotel_data, is_patch=True, id=hotel_id)
         await self.db.commit()
 
