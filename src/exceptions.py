@@ -80,3 +80,9 @@ class AllRoomsBookedHTTPException(BookingHTTPException):
 class StringIsToLongHTTPException(BookingHTTPException):
     status_code = 400
     detail = 'Длина строки превышает допустимый лимит'
+
+
+class NotAuthenticatedHTTPException(BookingHTTPException):
+    status_code = 401
+    detail = 'Вы не аутентифицированы'
+

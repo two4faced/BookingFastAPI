@@ -8,14 +8,12 @@ class UserLogIn(BaseModel):
 
 class UserRequestAdd(BaseModel):
     name: str
-    nickname: str
     email: EmailStr
     password: str
 
 
 class UserAdd(BaseModel):
     name: str
-    nickname: str
     email: EmailStr
     hashed_password: str
 
@@ -23,7 +21,6 @@ class UserAdd(BaseModel):
 class User(BaseModel):
     id: int
     name: str
-    nickname: str
     email: EmailStr
 
     model_config = ConfigDict(from_attributes=True)

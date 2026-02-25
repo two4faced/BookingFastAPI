@@ -63,7 +63,6 @@ async def register_user(add_data, ac):
         '/auth/register',
         json={
             'name': 'pytest',
-            'nickname': 'pytest',
             'email': 'coolemail@mail.ru',
             'password': 'pytest1234',
         },

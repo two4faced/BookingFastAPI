@@ -18,7 +18,6 @@ class AuthService(BaseService):
         hashed_password = self.hash_password(user_data.password)
         new_user_data = UserAdd(
             name=user_data.name,
-            nickname=user_data.nickname,
             email=user_data.email,
             hashed_password=hashed_password,
         )

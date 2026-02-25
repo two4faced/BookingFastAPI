@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, Request
 
 from src.api.dependencies import UserIdDep, DBDep
 from src.exceptions import (
@@ -6,7 +6,7 @@ from src.exceptions import (
     UserNotFoundException,
     UserNotFoundHTTPException,
     WrongPassOrEmailException,
-    WrongPassOrEmailHTTPException,
+    WrongPassOrEmailHTTPException, NotAuthenticatedHTTPException,
 )
 from src.schemas.users import UserRequestAdd, UserLogIn, User
 from src.services.auth import AuthService
@@ -44,6 +44,11 @@ async def get_me(user_id: UserIdDep, db: DBDep):
 
 
 @router.post('/logout')
-async def logout(response: Response):
+async def logout(response: Response, request: Request):
+    access_token = request.cookies.get('access_token')
+
+    if not access_token:
+        raise NotAuthenticatedHTTPException
+
     response.delete_cookie('access_token')
     return {'status': 'OK'}

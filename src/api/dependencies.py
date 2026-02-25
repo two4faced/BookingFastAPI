@@ -4,6 +4,7 @@ from fastapi import Depends, Query, Request, HTTPException
 from pydantic import BaseModel
 
 from src.database import async_session_maker
+from src.exceptions import NotAuthenticatedHTTPException
 from src.services.auth import AuthService
 from src.utils.db_manager import DBManager
 
@@ -19,7 +20,7 @@ PaginationDep = Annotated[PaginationParams, Depends()]
 def get_token(request: Request) -> str:
     token = request.cookies.get('access_token', None)
     if not token:
-        raise HTTPException(status_code=401, detail='Вы не аутентифицированы')
+        raise NotAuthenticatedHTTPException
     return token
 
 
