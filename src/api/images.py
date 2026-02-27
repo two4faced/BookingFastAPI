@@ -8,3 +8,5 @@ router = APIRouter(prefix='/images', tags=['Изображения'])
 @router.post('')
 def add_image(file: UploadFile):
     ImagesService().add_image(file)
+
+    return {'status': 'OK'}

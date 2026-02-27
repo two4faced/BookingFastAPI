@@ -4,7 +4,7 @@ from src.schemas.facilities import Facilities
 
 
 class RoomsAddRequest(BaseModel):
-    title: str
+    title: str = Field(min_length=5)
     description: str | None = Field(None)
     price: int
     quantity: int
@@ -15,7 +15,7 @@ class RoomsAddRequest(BaseModel):
 
 class RoomsAdd(BaseModel):
     hotel_id: int
-    title: str
+    title: str = Field(min_length=5)
     description: str | None = Field(None)
     price: int
     quantity: int
@@ -32,14 +32,14 @@ class RoomsWithRels(Rooms):
 
 
 class RoomsPatch(BaseModel):
-    title: str | None = Field(None)
+    title: str | None = Field(None, min_length=5)
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
 
 
 class RoomsPatchRequest(BaseModel):
-    title: str | None = Field(None)
+    title: str | None = Field(None, min_length=5)
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)

@@ -1,6 +1,11 @@
+import logging
+
+from asyncpg import ForeignKeyViolationError
 from sqlalchemy import delete, and_
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.exc import IntegrityError
 
+from src.exceptions import ObjectNotFoundException
 from src.models.facilities import FacilitiesORM, RoomFacilitiesORM
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import (
@@ -29,10 +34,21 @@ class RoomFacilitiesRepository(BaseRepository):
             for facility_id in data.facilities_ids  # type: ignore
         ]
 
-        insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)
-        insert_stmt = insert_stmt.on_conflict_do_nothing(index_elements=['room_id', 'facility_id'])
-
-        await self.session.execute(insert_stmt)
+        try:
+            insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)
+            insert_stmt = insert_stmt.on_conflict_do_nothing(index_elements=['room_id', 'facility_id'])
+            await self.session.execute(insert_stmt)
+        except IntegrityError as exc:
+            logging.error(
+                f'Не удалось добавить данные в базу, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+            )
+            if isinstance(exc.orig.__cause__, ForeignKeyViolationError):
+                raise ObjectNotFoundException from exc
+            else:
+                logging.error(
+                    f'Незнакомая ошибка, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+                )
+                raise exc
 
         condition = and_(  # type: ignore
             RoomFacilitiesORM.room_id == room_id,  # type: ignore

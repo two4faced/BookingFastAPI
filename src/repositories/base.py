@@ -1,7 +1,7 @@
 import logging
 from typing import Any
 
-from asyncpg.exceptions import UniqueViolationError, StringDataRightTruncationError
+from asyncpg.exceptions import UniqueViolationError, StringDataRightTruncationError, ForeignKeyViolationError
 from sqlalchemy.exc import NoResultFound, IntegrityError, DBAPIError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
@@ -76,8 +76,20 @@ class BaseRepository:
         return inserted_data
 
     async def add_batch(self, data: list[BaseModel]) -> None:
-        add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
-        await self.session.execute(add_data_stmt)
+        try:
+            add_data_stmt = insert(self.model).values([item.model_dump() for item in data])
+            await self.session.execute(add_data_stmt)
+        except IntegrityError as exc:
+            logging.error(
+                f'Не удалось добавить данные в базу, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+            )
+            if isinstance(exc.orig.__cause__, ForeignKeyViolationError):
+                raise ObjectNotFoundException from exc
+            else:
+                logging.error(
+                    f'Незнакомая ошибка, входные данные: {data}, тип ошибки: {exc.orig.__cause__}'
+                )
+                raise exc
 
     async def delete(self, **filter_by) -> None:
         del_stmt = delete(self.model).filter_by(**filter_by)

@@ -8,7 +8,7 @@ from src.exceptions import (
     HotelNotFoundHTTPException,
     RoomNotFoundHTTPException,
     RoomNotFoundException,
-    HotelNotFoundException,
+    HotelNotFoundException, ObjectNotFoundException, FacilitiesNotFoundHTTTPException,
 )
 from src.schemas.rooms import RoomsAddRequest, RoomsPatchRequest
 from src.services.rooms import RoomsService
@@ -44,6 +44,8 @@ async def add_room(room_data: RoomsAddRequest, db: DBDep, hotel_id: int = Path()
         result = await RoomsService(db).add_room(room_data, hotel_id)
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
+    except ObjectNotFoundException:
+        raise FacilitiesNotFoundHTTTPException
 
     return {'status': 'OK', 'data': result}
 
@@ -83,4 +85,6 @@ async def change_room(hotel_id: int, room_id: int, room_data: RoomsAddRequest, d
         raise HotelNotFoundHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
+    except ObjectNotFoundException:
+        raise FacilitiesNotFoundHTTTPException
     return {'status': 'OK'}

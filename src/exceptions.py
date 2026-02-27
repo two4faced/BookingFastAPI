@@ -71,6 +71,10 @@ class UserNotFoundHTTPException(BookingHTTPException):
     status_code = 401
     detail = 'Пользователь не найден'
 
+class FacilitiesNotFoundHTTTPException(BookingHTTPException):
+    status_code = 400
+    detail = 'Добавленные удобства не найдены'
+
 
 class WrongPassOrEmailHTTPException(BookingHTTPException):
     status_code = 401
@@ -90,4 +94,9 @@ class StringIsToLongHTTPException(BookingHTTPException):
 class NotAuthenticatedHTTPException(BookingHTTPException):
     status_code = 401
     detail = 'Вы не аутентифицированы'
+
+
+class FacilityAlreadyExists(BookingHTTPException):
+    status_code = 400
+    detail = 'Данное удобство уже существует'
 
