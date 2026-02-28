@@ -8,7 +8,6 @@ class RatingService(BaseService):
     async def get_ratings(self, hotel_id: int):
         return await self.db.ratings.get_all(hotel_id=hotel_id)
 
-
     async def add_rating(self, rating_data: RatingRequestAdd, hotel_id: int, user_id: UserIdDep):
         try:
             await self.db.hotels.get_one(id=hotel_id)

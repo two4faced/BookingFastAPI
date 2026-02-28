@@ -44,6 +44,10 @@ class WrongPassOrEmailException(BookingException):
     detail = 'Имя пользователя или пароль неверные'
 
 
+class NothingChangedException(BookingException):
+    detail = 'Ничего не было изменено'
+
+
 class BookingHTTPException(HTTPException):
     status_code = 500
     detail = 'Непредвиденная ошибка'
@@ -70,6 +74,7 @@ class RoomNotFoundHTTPException(BookingHTTPException):
 class UserNotFoundHTTPException(BookingHTTPException):
     status_code = 401
     detail = 'Пользователь не найден'
+
 
 class FacilitiesNotFoundHTTTPException(BookingHTTPException):
     status_code = 400
@@ -100,3 +105,7 @@ class FacilityAlreadyExists(BookingHTTPException):
     status_code = 400
     detail = 'Данное удобство уже существует'
 
+
+class NothingChangedHTTPException(BookingHTTPException):
+    status_code = 400
+    detail = 'Ничего не было изменено'

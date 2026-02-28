@@ -1,7 +1,11 @@
 import logging
 from typing import Any
 
-from asyncpg.exceptions import UniqueViolationError, StringDataRightTruncationError, ForeignKeyViolationError
+from asyncpg.exceptions import (
+    UniqueViolationError,
+    StringDataRightTruncationError,
+    ForeignKeyViolationError,
+)
 from sqlalchemy.exc import NoResultFound, IntegrityError, DBAPIError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
@@ -12,6 +16,7 @@ from src.exceptions import (
     ObjectNotFoundException,
     ObjectAlreadyExistsException,
     IncorrectStringValueException,
+    NothingChangedException,
 )
 from src.repositories.mappers.base import DataMapper
 
@@ -97,6 +102,9 @@ class BaseRepository:
 
     async def edit(self, data: BaseModel, is_patch: bool = False, **filter_by) -> None:
         values_to_update = data.model_dump(exclude_unset=is_patch)
+
+        if not values_to_update:
+            raise NothingChangedException
 
         filtered_values = {k: v for k, v in values_to_update.items() if v is not None}
 

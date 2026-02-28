@@ -8,7 +8,11 @@ from src.exceptions import (
     HotelNotFoundHTTPException,
     RoomNotFoundHTTPException,
     RoomNotFoundException,
-    HotelNotFoundException, ObjectNotFoundException, FacilitiesNotFoundHTTTPException,
+    HotelNotFoundException,
+    ObjectNotFoundException,
+    FacilitiesNotFoundHTTTPException,
+    NothingChangedException,
+    NothingChangedHTTPException,
 )
 from src.schemas.rooms import RoomsAddRequest, RoomsPatchRequest
 from src.services.rooms import RoomsService
@@ -73,6 +77,8 @@ async def edit_room(db: DBDep, hotel_id: int, room_id: int, room_data: RoomsPatc
         raise HotelNotFoundHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
+    except NothingChangedException:
+        raise NothingChangedHTTPException
 
     return {'status': 'OK'}
 

@@ -7,7 +7,10 @@ from src.api.dependencies import PaginationDep, DBDep
 from src.exceptions import (
     ObjectNotFoundException,
     DateFromLaterThenOrEQDateToException,
-    HotelNotFoundHTTPException, HotelNotFoundException,
+    HotelNotFoundHTTPException,
+    HotelNotFoundException,
+    NothingChangedException,
+    NothingChangedHTTPException,
 )
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelsService
@@ -91,4 +94,6 @@ async def patch_hotel(hotel_id: int, hotel_data: HotelPatch, db: DBDep):
         await HotelsService(db).patch_hotel(hotel_id, hotel_data)
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
+    except NothingChangedException:
+        raise NothingChangedHTTPException
     return {'status': 'OK'}

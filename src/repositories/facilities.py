@@ -36,7 +36,9 @@ class RoomFacilitiesRepository(BaseRepository):
 
         try:
             insert_stmt = pg_insert(RoomFacilitiesORM).values(data_to_insert)
-            insert_stmt = insert_stmt.on_conflict_do_nothing(index_elements=['room_id', 'facility_id'])
+            insert_stmt = insert_stmt.on_conflict_do_nothing(
+                index_elements=['room_id', 'facility_id']
+            )
             await self.session.execute(insert_stmt)
         except IntegrityError as exc:
             logging.error(

@@ -13,17 +13,17 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "27cccc040d1c"
-down_revision: Union[str, Sequence[str], None] = "ded943d3bf4e"
+revision: str = '27cccc040d1c'
+down_revision: Union[str, Sequence[str], None] = 'ded943d3bf4e'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.create_unique_constraint("_title_location_uc", "hotels", ["title", "location"])
+    op.create_unique_constraint('_title_location_uc', 'hotels', ['title', 'location'])
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_constraint("_title_location_uc", "hotels", type_="unique")
+    op.drop_constraint('_title_location_uc', 'hotels', type_='unique')

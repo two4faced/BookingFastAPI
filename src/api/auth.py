@@ -6,7 +6,8 @@ from src.exceptions import (
     UserNotFoundException,
     UserNotFoundHTTPException,
     WrongPassOrEmailException,
-    WrongPassOrEmailHTTPException, NotAuthenticatedHTTPException,
+    WrongPassOrEmailHTTPException,
+    NotAuthenticatedHTTPException,
 )
 from src.schemas.users import UserRequestAdd, UserLogIn, User
 from src.services.auth import AuthService

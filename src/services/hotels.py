@@ -1,7 +1,11 @@
 from datetime import date
 
-from src.exceptions import ObjectNotFoundException, HotelNotFoundException, ObjectAlreadyExistsException, \
-    HotelAlreadyExistsHTTPException
+from src.exceptions import (
+    ObjectNotFoundException,
+    HotelNotFoundException,
+    ObjectAlreadyExistsException,
+    HotelAlreadyExistsHTTPException,
+)
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.services.base import BaseService
 
