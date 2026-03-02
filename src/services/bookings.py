@@ -1,4 +1,5 @@
 from src.api.dependencies import UserIdDep
+from src.exceptions import DateFromLaterThenOrEQDateToException
 from src.schemas.bookings import BookingsAddRequest, BookingsAdd
 from src.services.base import BaseService
 from src.services.rooms import RoomsService
@@ -13,6 +14,9 @@ class BookingsService(BaseService):
 
     async def book_room(self, user_id: UserIdDep, booking_data: BookingsAddRequest):
         await RoomsService(self.db).check_room_existence(booking_data.room_id)
+
+        if booking_data.date_to <= booking_data.date_from:
+            raise DateFromLaterThenOrEQDateToException
 
         room = await self.db.rooms.get_one(id=booking_data.room_id)
         hotel = await self.db.hotels.get_one(id=room.hotel_id)

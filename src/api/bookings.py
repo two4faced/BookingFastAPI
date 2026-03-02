@@ -1,11 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from src.api.dependencies import DBDep, UserIdDep
 from src.exceptions import (
     AllRoomsBookedException,
     AllRoomsBookedHTTPException,
     RoomNotFoundException,
-    RoomNotFoundHTTPException,
+    RoomNotFoundHTTPException, DateFromLaterThenOrEQDateToException,
 )
 from src.schemas.bookings import BookingsAddRequest
 from src.services.bookings import BookingsService
@@ -13,7 +13,7 @@ from src.services.bookings import BookingsService
 router = APIRouter(prefix='/bookings', tags=['Бронирования'])
 
 
-@router.get('')
+@router.get('', summary='Получить все бронирования')
 async def get_bookings(db: DBDep):
     return await BookingsService(db).get_bookings()
 
@@ -26,7 +26,7 @@ async def get_my_bookings(
     return await BookingsService(db).get_my_bookings(user_id)
 
 
-@router.post('')
+@router.post('', summary='Забронировать номер')
 async def book_room(user_id: UserIdDep, booking_data: BookingsAddRequest, db: DBDep):
     try:
         booking = await BookingsService(db).book_room(user_id, booking_data)
@@ -34,6 +34,8 @@ async def book_room(user_id: UserIdDep, booking_data: BookingsAddRequest, db: DB
         raise AllRoomsBookedHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
+    except DateFromLaterThenOrEQDateToException as exc:
+        raise HTTPException(status_code=400, detail=exc.detail)
 
     await db.commit()
     return {'status': 'OK', 'data': booking}

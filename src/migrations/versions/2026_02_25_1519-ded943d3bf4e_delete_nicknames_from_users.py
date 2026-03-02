@@ -22,6 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     op.drop_constraint(op.f('users_nickname_key'), 'users', type_='unique')
+    op.drop_column('users', 'nickname')
 
 
 def downgrade() -> None:

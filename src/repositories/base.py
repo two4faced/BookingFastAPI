@@ -16,7 +16,7 @@ from src.exceptions import (
     ObjectNotFoundException,
     ObjectAlreadyExistsException,
     IncorrectStringValueException,
-    NothingChangedException,
+    NothingChangedException, ObjectBookedException,
 )
 from src.repositories.mappers.base import DataMapper
 
@@ -97,8 +97,18 @@ class BaseRepository:
                 raise exc
 
     async def delete(self, **filter_by) -> None:
-        del_stmt = delete(self.model).filter_by(**filter_by)
-        await self.session.execute(del_stmt)
+        try:
+            del_stmt = delete(self.model).filter_by(**filter_by)
+            await self.session.execute(del_stmt)
+        except IntegrityError as exc:
+            if isinstance(exc.orig.__cause__, ForeignKeyViolationError):
+                raise ObjectBookedException
+            else:
+                logging.error(
+                    f'Незнакомая ошибка, входные данные: {filter_by}, тип ошибки: {exc.orig.__cause__}'
+                )
+                raise exc
+
 
     async def edit(self, data: BaseModel, is_patch: bool = False, **filter_by) -> None:
         values_to_update = data.model_dump(exclude_unset=is_patch)

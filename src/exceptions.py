@@ -48,6 +48,10 @@ class NothingChangedException(BookingException):
     detail = 'Ничего не было изменено'
 
 
+class ObjectBookedException(BookingException):
+    detail = 'Объект забронирован и не может быть удален'
+
+
 class BookingHTTPException(HTTPException):
     status_code = 500
     detail = 'Непредвиденная ошибка'
@@ -109,3 +113,13 @@ class FacilityAlreadyExists(BookingHTTPException):
 class NothingChangedHTTPException(BookingHTTPException):
     status_code = 400
     detail = 'Ничего не было изменено'
+
+
+class HotelBookedHTTPException(BookingHTTPException):
+    status_code = 409
+    detail = 'Отель забронирован и не может быть удален'
+
+
+class RoomBookedHTTPException(BookingHTTPException):
+    status_code = 409
+    detail = 'Номер забронирован и не может быть удален'

@@ -10,7 +10,7 @@ from src.exceptions import (
     HotelNotFoundHTTPException,
     HotelNotFoundException,
     NothingChangedException,
-    NothingChangedHTTPException,
+    NothingChangedHTTPException, HotelBookedHTTPException, ObjectBookedException,
 )
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelsService
@@ -76,6 +76,8 @@ async def delete_hotel(hotel_id: int, db: DBDep):
         await HotelsService(db).delete_hotel(hotel_id)
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
+    except ObjectBookedException:
+        raise HotelBookedHTTPException
     return {'status': 'OK'}
 
 
