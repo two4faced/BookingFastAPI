@@ -16,6 +16,9 @@ class RatingService(BaseService):
 
         _rating_data = RatingAdd(hotel_id=hotel_id, user_id=user_id, **rating_data.model_dump())
         result = await self.db.ratings.add(_rating_data)
+
+        await self.db.hotels.change_rating(hotel_id=hotel_id)
+
         await self.db.commit()
 
         return result

@@ -56,6 +56,7 @@ async def create_hotel(
                 'value': {
                     'title': 'Отель 5 звезд у моря',
                     'location': 'г. Сочи, ул. Моря, 1',
+                    'stars': 3,
                 },
             },
             '2': {
@@ -63,6 +64,7 @@ async def create_hotel(
                 'value': {
                     'title': 'Отель У фонтана',
                     'location': 'Дубай, ул. Шейха, 2',
+                    'stars': 5,
                 },
             },
         }
