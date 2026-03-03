@@ -2,11 +2,16 @@ import datetime
 from datetime import timezone, timedelta
 
 from fastapi import HTTPException
+from jwt import ExpiredSignatureError
 from passlib.context import CryptContext
 import jwt
 
 from src.config import settings
-from src.exceptions import UserNotFoundException, WrongPassOrEmailException
+from src.exceptions import (
+    UserNotFoundException,
+    WrongPassOrEmailException,
+    NotAuthenticatedHTTPException,
+)
 from src.schemas.users import UserRequestAdd, UserAdd, UserLogIn
 from src.services.base import BaseService
 
@@ -63,4 +68,8 @@ class AuthService(BaseService):
                 token, key=settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
             )
         except jwt.exceptions.DecodeError:
-            raise HTTPException(status_code=401, detail='Неверный токен')
+            raise NotAuthenticatedHTTPException
+        except ExpiredSignatureError:
+            raise HTTPException(
+                status_code=401, detail='Для продолжения необходимо заново войти в систему.'
+            )

@@ -8,6 +8,7 @@ class RoomsAddRequest(BaseModel):
     description: str | None = Field(None)
     price: int
     quantity: int
+    guests_count: float = Field(gt=0)
     facilities_ids: list[int] | None = Field(None)
 
     model_config = ConfigDict(from_attributes=True)
@@ -19,6 +20,7 @@ class RoomsAdd(BaseModel):
     description: str | None = Field(None)
     price: int
     quantity: int
+    guests_count: float = Field(gt=0)
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -36,6 +38,7 @@ class RoomsPatch(BaseModel):
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
+    guests_count: float | None = Field(None, gt=0)
 
 
 class RoomsPatchRequest(BaseModel):
@@ -43,6 +46,7 @@ class RoomsPatchRequest(BaseModel):
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
+    guests_count: float | None = Field(None, gt=0)
     facilities_ids: list[int] | None = Field(None)
 
     model_config = ConfigDict(from_attributes=True)

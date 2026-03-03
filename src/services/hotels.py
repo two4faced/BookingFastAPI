@@ -5,6 +5,7 @@ from src.exceptions import (
     HotelNotFoundException,
     ObjectAlreadyExistsException,
     HotelAlreadyExistsHTTPException,
+    NothingChangedException,
 )
 from src.schemas.hotels import HotelAdd, HotelPatch
 from src.services.base import BaseService
@@ -56,6 +57,9 @@ class HotelsService(BaseService):
 
     async def patch_hotel(self, hotel_id: int, hotel_data: HotelPatch):
         await self.check_hotel_existence(hotel_id)
+
+        if not hotel_data.model_dump(exclude_unset=True):
+            raise NothingChangedException
 
         await self.db.hotels.edit(hotel_data, is_patch=True, id=hotel_id)
         await self.db.commit()

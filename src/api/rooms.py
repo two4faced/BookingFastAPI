@@ -12,7 +12,9 @@ from src.exceptions import (
     ObjectNotFoundException,
     FacilitiesNotFoundHTTTPException,
     NothingChangedException,
-    NothingChangedHTTPException, ObjectBookedException, RoomBookedHTTPException,
+    NothingChangedHTTPException,
+    ObjectBookedException,
+    RoomBookedHTTPException,
 )
 from src.schemas.rooms import RoomsAddRequest, RoomsPatchRequest
 from src.services.rooms import RoomsService
@@ -34,8 +36,11 @@ async def get_rooms(
 
 
 @router.get('/{hotel_id}/rooms/{room_id}', summary='Получить номер')
-async def get_room(db: DBDep, room_id: int = Path(description='ID номера'),
-                   hotel_id: int = Path(description='ID отеля')):
+async def get_room(
+    db: DBDep,
+    room_id: int = Path(description='ID номера'),
+    hotel_id: int = Path(description='ID отеля'),
+):
     try:
         result = await RoomsService(db).get_room(room_id, hotel_id)
     except RoomNotFoundException:

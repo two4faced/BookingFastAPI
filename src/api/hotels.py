@@ -10,7 +10,9 @@ from src.exceptions import (
     HotelNotFoundHTTPException,
     HotelNotFoundException,
     NothingChangedException,
-    NothingChangedHTTPException, HotelBookedHTTPException, ObjectBookedException,
+    NothingChangedHTTPException,
+    HotelBookedHTTPException,
+    ObjectBookedException,
 )
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelsService

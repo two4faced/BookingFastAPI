@@ -5,7 +5,8 @@ from src.exceptions import (
     AllRoomsBookedException,
     AllRoomsBookedHTTPException,
     RoomNotFoundException,
-    RoomNotFoundHTTPException, DateFromLaterThenOrEQDateToException,
+    RoomNotFoundHTTPException,
+    DateFromLaterThenOrEQDateToException,
 )
 from src.schemas.bookings import BookingsAddRequest
 from src.services.bookings import BookingsService

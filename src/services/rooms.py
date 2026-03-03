@@ -4,6 +4,7 @@ from src.exceptions import (
     ObjectNotFoundException,
     HotelNotFoundException,
     RoomNotFoundException,
+    NothingChangedException,
 )
 from src.schemas.facilities import RoomFacilityAdd
 from src.schemas.rooms import RoomsAddRequest, RoomsAdd, RoomsPatchRequest, RoomsPatch
@@ -53,9 +54,12 @@ class RoomsService(BaseService):
         _room_data_dict = room_data.model_dump(exclude_unset=True)
         _room_data = RoomsPatch(**_room_data_dict)
 
-        await self.db.rooms.edit(_room_data, is_patch=True, id=room_id, hotel_id=hotel_id)
+        if not _room_data_dict:
+            raise NothingChangedException
+
         if room_data.facilities_ids:
             await self.db.room_facilities.change_room_facilities(room_id=room_id, data=room_data)
+        await self.db.rooms.edit(_room_data, is_patch=True, id=room_id, hotel_id=hotel_id)
 
         await self.db.commit()
 
