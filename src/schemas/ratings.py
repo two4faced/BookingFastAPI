@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, conint
+from pydantic import BaseModel, ConfigDict, conint, Field
 
 
 class RatingRequestAdd(BaseModel):
@@ -17,5 +17,12 @@ class RatingAdd(RatingRequestAdd):
 
 class Rating(RatingAdd):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RatingPatch(BaseModel):
+    rating: conint(ge=1, le=5) | None = Field(None)  # type: ignore
+    rating_text: str | None = Field(None, max_length=1000)
 
     model_config = ConfigDict(from_attributes=True)

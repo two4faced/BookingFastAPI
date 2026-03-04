@@ -2,6 +2,7 @@ from datetime import date
 
 from sqlalchemy import func, select, Select, Subquery
 
+from src.models import RatingsORM
 from src.models.bookings import BookingsORM
 from src.models.rooms import RoomsORM
 
@@ -43,3 +44,11 @@ def rooms_ids_for_booking(date_from: date, date_to: date, hotel_id: int | None =
     )
 
     return rooms_ids_to_get
+
+
+def get_average_rating(hotel_id: int):
+    avg_rating = select(func.round(func.avg(RatingsORM.rating), 1)).where(
+        RatingsORM.hotel_id == hotel_id
+    )
+
+    return avg_rating

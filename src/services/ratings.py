@@ -1,6 +1,6 @@
 from src.api.dependencies import UserIdDep
-from src.exceptions import ObjectNotFoundException, HotelNotFoundException
-from src.schemas.ratings import RatingAdd, RatingRequestAdd
+from src.exceptions import ObjectNotFoundException, HotelNotFoundException, NothingChangedException
+from src.schemas.ratings import RatingAdd, RatingRequestAdd, RatingPatch
 from src.services.base import BaseService
 
 
@@ -22,3 +22,18 @@ class RatingService(BaseService):
         await self.db.commit()
 
         return result
+
+    async def patch_rating(
+            self, rating_data: RatingPatch, hotel_id: int, user_id: UserIdDep
+    ):
+        try:
+            await self.db.hotels.get_one(id=hotel_id)
+        except ObjectNotFoundException as exc:
+            raise HotelNotFoundException from exc
+
+        if not rating_data.model_dump(exclude_unset=True):
+            raise NothingChangedException
+
+        await self.db.ratings.edit(rating_data, is_patch=True, user_id=user_id, hotel_id=hotel_id)
+        await self.db.commit()
+

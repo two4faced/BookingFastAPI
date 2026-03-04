@@ -123,3 +123,8 @@ class HotelBookedHTTPException(BookingHTTPException):
 class RoomBookedHTTPException(BookingHTTPException):
     status_code = 409
     detail = 'Номер забронирован и не может быть удален'
+
+
+class RatingIsAlreadyPostedHTTPException(BookingHTTPException):
+    status_code = 409
+    detail = 'Вы уже оставляли отзыв для этого отеля'

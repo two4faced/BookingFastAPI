@@ -1,12 +1,11 @@
-from sqlalchemy import select, func, update
+from sqlalchemy import select, update
 
 from src.exceptions import DateFromLaterThenOrEQDateToException
-from src.models import RatingsORM
 from src.models.hotels import HotelsORM
 from src.models.rooms import RoomsORM
 from src.repositories.base import BaseRepository
 from src.repositories.mappers.mappers import HotelDataMapper
-from src.repositories.utils import rooms_ids_for_booking
+from src.repositories.utils import rooms_ids_for_booking, get_average_rating
 
 
 class HotelsRepository(BaseRepository):
@@ -37,21 +36,12 @@ class HotelsRepository(BaseRepository):
 
         return [self.mapper.map_to_domain_entity(hotel) for hotel in result.scalars().all()]
 
-
     async def change_rating(self, hotel_id: int):
-        avg_rating = (
-            select(func.round(func.avg(RatingsORM.rating), 1))
-            .where(RatingsORM.hotel_id == hotel_id)
-        )
+        avg_rating = get_average_rating(hotel_id=hotel_id)
 
         result = await self.session.execute(avg_rating)
         new_rating = result.scalars().one_or_none() or 0.0
 
-        update_stmt = (
-            update(HotelsORM)
-            .where(HotelsORM.id == hotel_id)
-            .values(rating=new_rating)
-        )
+        update_stmt = update(HotelsORM).where(HotelsORM.id == hotel_id).values(rating=new_rating)
 
         await self.session.execute(update_stmt)
-
