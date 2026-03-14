@@ -12,6 +12,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 import uvicorn
@@ -42,6 +43,15 @@ app.include_router(router_facilities)
 app.include_router(router_ratings)
 app.include_router(router_images)
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # URL вашего фронтенда
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
 if __name__ == '__main__':
     uvicorn.run('__main__:app', reload=True)

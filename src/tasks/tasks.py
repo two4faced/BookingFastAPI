@@ -7,10 +7,10 @@ from src.tasks.celery_app import celery_instance
 
 
 @celery_instance.task()
-def resize_image(image_path: str):
+def resize_hotel_image(image_path: str, hotel_id: int):
     logging.debug(f'Вызывается функция resize_image c {image_path=}')
     sizes = [1000, 500, 200]
-    output_folder = 'src/static/images'
+    output_folder = f'src/static/images/{hotel_id}'
 
     img = Image.open(image_path)
     base_name = os.path.basename(image_path)
