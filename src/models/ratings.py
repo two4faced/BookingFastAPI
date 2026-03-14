@@ -1,7 +1,12 @@
-from sqlalchemy.orm import Mapped, mapped_column
+import typing
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, CheckConstraint, VARCHAR, UniqueConstraint
 
 from src.database import Base
+
+if typing.TYPE_CHECKING:
+    from src.models import UsersORM
 
 
 class RatingsORM(Base):
@@ -14,3 +19,5 @@ class RatingsORM(Base):
     rating_text: Mapped[int] = mapped_column(VARCHAR(1000))
 
     __table_args__ = (UniqueConstraint('user_id', 'hotel_id', name='_user_hotel_ids_uc'),)
+
+    user: Mapped['UsersORM'] = relationship(back_populates='ratings')

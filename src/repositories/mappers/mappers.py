@@ -51,3 +51,12 @@ class RoomFacilitiesDataMapper(DataMapper):
 class RatingsDataMapper(DataMapper):
     db_model = RatingsORM
     schema = Rating
+
+    @classmethod
+    def map_to_domain_entity(cls, model: RatingsORM) -> Rating:
+        data = model.__dict__.copy()
+
+        if hasattr(model, 'user') and model.user:
+            data['user_name'] = model.user.name
+
+        return Rating.model_validate(data)

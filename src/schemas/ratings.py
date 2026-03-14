@@ -17,6 +17,7 @@ class RatingAdd(RatingRequestAdd):
 
 class Rating(RatingAdd):
     id: int
+    user_name: str
 
     model_config = ConfigDict(from_attributes=True)
 
